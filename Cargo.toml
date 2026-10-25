@@ -1,0 +1,15 @@
+[package]
+name = "phiecs"
+version = "0.1.0"
+edition = "2024"
+description = "An entity-component-system for language: words as entities, relations as edges, conditions as state, and a quest that learns them by asking."
+
+[dependencies]
+# The one seed (docs/159): a word's starting angles come from phinet so the
+# same word has the same angles in every phasor of the workspace.
+phistd = { path = "../phistd" }
+
+[dev-dependencies]
+# Dev-only (cargo allows the cycle): the kit's face test reads frames back
+# through phient's prose Knowing.
+phient = { path = "../phient" }
