@@ -1,6 +1,6 @@
 # phikit::device — the registry, a tree of conditions found in a kernel
 
-In Phient's world, a word (w) is a seed: what it relates to, under what conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical stores no point: a word is 32–64 relations, each a complex phasor on a closed circle with a count; meaning is a side effect of pairs of words moving under a condition.
+In Phient's world, a word (w) is a seed: what it relates to, under what conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical stores no point: a word is 32–64 relations, each a complex phasor on a closed circle; meaning is a side effect of pairs of words moving under a condition, and they move by the error of what was expected — toward what came, away from what did not.
 
 A port of the IOKit kernel registry (`IORegistryEntry.h`, `IOService.h`, `IOKitKeys.h` under `gemphi/phi/apple-source/ruskit/Kernel.framework`) in our words. Every piece of hardware and every driver is an `Entry` with a name, a class and a property table; entries hang from one another in `Plane`s — service, power, device tree, audio, FireWire, USB — and the same entry has a different parent under each plane. That is X ⇒ Y under c, the paradigm's shape.
 

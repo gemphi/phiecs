@@ -13,11 +13,27 @@ use crate::scope::{nest, scopes, SAYS};
 /// The end of a paragraph, as a word.
 pub const END: &str = "⟨end⟩";
 
+/// A typographic apostrophe (U+2019, U+02BC) is an apostrophe only BETWEEN
+/// two alphanumerics; standing alone it is a closing quote, and punctuation.
+/// Typeset prose carries U+2019 rather than the straight one, and reading it
+/// as punctuation shatters every contraction into fragments -- t, s, ve --
+/// which then crowd the vocabulary as if they were words. Measured on the
+/// English guide: 8,199 of them, and `t` was the 6th most frequent token of
+/// the whole corpus (docs/198).
+fn held(before: Option<char>, c: char, after: Option<char>) -> bool {
+    matches!(c, '\u{2019}' | '\u{02BC}')
+        && before.is_some_and(char::is_alphanumeric)
+        && after.is_some_and(char::is_alphanumeric)
+}
+
 /// Lower-case words and punctuation marks, each a token.
 pub fn tokens(text: &str) -> Vec<String> {
     let mut out = Vec::new();
     let mut word = String::new();
-    for c in text.chars() {
+    let chars: Vec<char> = text.chars().collect();
+    for (i, &raw) in chars.iter().enumerate() {
+        let before = if i > 0 { chars.get(i - 1).copied() } else { None };
+        let c = if held(before, raw, chars.get(i + 1).copied()) { '\'' } else { raw };
         if c.is_alphanumeric() || c == '\'' {
             word.extend(c.to_lowercase());
         } else {
@@ -89,5 +105,14 @@ mod tests {
         assert!(rows.iter().any(|r| r.about == "came@story/ch1/p1#4" && r.kind == "within" && r.other == "scope:story/ch1/p1"));
         assert!(rows.iter().any(|r| r.about == "scope:story/ch1/p1" && r.kind == "within" && r.other == "scope:story/ch1"));
         assert_eq!(tokens("She suddenly had an idea: their new"), ["she", "suddenly", "had", "an", "idea", ":", "their", "new"]);
+    }
+
+    #[test]
+    fn a_typeset_contraction_is_one_word_and_a_closing_quote_is_not() {
+        // U+2019 between letters holds the word together...
+        assert_eq!(tokens("don\u{2019}t it\u{2019}s I\u{2019}ve"), ["don't", "it's", "i've"]);
+        // ...but the same character closing a quotation is punctuation.
+        assert_eq!(tokens("\u{2018}go home\u{2019} now"), ["\u{2018}", "go", "home", "\u{2019}", "now"]);
+        assert_eq!(tokens("the dogs\u{2019} bowls"), ["the", "dogs", "\u{2019}", "bowls"]);
     }
 }

@@ -8,6 +8,7 @@
 
 mod plan;
 mod relate;
+pub use relate::{SLOTS, TURN};
 mod rows;
 mod rule;
 mod schedule;

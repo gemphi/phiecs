@@ -1,47 +1,115 @@
 # phiecs — architecture
 
-Apple's RealityFoundation, read as a language engine. Every name on the left
-exists in `crates/apple/src/reality-foundation/`; every name on the right is
-what it becomes when the entity is a word.
+## The modules and what they use
 
-| RealityKit / reality-foundation | phiecs | why it changed |
-|---|---|---|
-| `Entity { id, generation }` | `Word(u32)` | Words are interned, never recycled, so a generation counter would never be incremented. Apple's never is either (`entity.rs:52`) — here it is simply absent. |
-| `EntityGenerator` (AtomicU64) | `Lexicon` | A language needs id → spelling as much as the reverse: every report a person reads is in words. |
-| `Component` + blanket impl | `Aspect`, explicit impl | Apple's `impl<T: Send+Sync+'static> Component for T` (`component.rs:21`) makes every type a component and, by coherence, makes `on_attach`/`on_detach` unoverridable. Here the impl is written by hand and the hooks work. |
-| `Storage<T>` = `Vec<(Entity, T)>` | `Dense<A>` = `Vec<Option<A>>` | Apple scans linearly for every get and `retain`s on every insert (`component.rs:44`). Word ids are dense from zero, so the id is the slot. |
-| `World::despawn` | `World::forget` | Apple's removes the entity from a list and leaves every component behind — its own comment says so (`world.rs:174`). `forget` walks every store and every edge. |
-| `Parent` / `Children` | `Edge` / `Edges` keyed by `Relation` | A tree has one edge kind and one parent. A language is a multigraph, and the kind is the payload. |
-| `add_child` / `remove_child` | `relate` / `unrelate` | Same call shape; relating also moves both phasors on that channel, which is the whole of learning here. |
-| `Transform` (position/rotation/scale) | `Phasor` (64 × angle, amplitude, evidence) | Phical stores no point. |
-| `Query::iter() -> Vec<…>` | `with()` / `with2()` / `related()` | Apple allocates a vector per query (`query.rs:23`); these are iterators, and `related()` is the join along an edge kind that a single-parent tree cannot express. |
-| `SystemStage::{Input,PreUpdate,Update,PostUpdate,Render}` | `Stage::{Ingest,PreCouple,Couple,PostCouple,Readout}` | Apple's stages assume a 16 ms frame; a language engine advances per observation. |
-| `World::update` + `Scheduler::run` | `World::step` | Apple writes the staged loop twice (`world.rs:67`, `system.rs:93`); there is one here. |
-| `Resources` (defined, never wired) | `Resources`, owned by `World` | Its own README flags the orphan (`reality-foundation/README.md:59`). |
-| `Scene::load_usdz` / `load_usdz_into` | `Quest::run` / `Quest::write` | The pattern transfers exactly: decode to descriptors, then a separate call that spawns them into a world. |
-| `GKStateMachine` (name-keyed scan) | `Condition` | Same shape, keyed on an interned word, so a condition is itself something the world can relate to. |
-| *(nothing)* | `Relation`, `Relations` | The kind of an edge. RealityKit has no equivalent and no `ComponentSet`; the honest counterpart is "which relation kinds this word has evidence for", which `Phasor::kinds` answers. |
-
-## Layout
-
+```mermaid
+graph TB
+    subgraph crate["phiecs"]
+        m_aspect["aspect"]
+        m_condition["condition"]
+        m_kit["kit<br/>body · device · track · eye"]
+        m_persona["persona"]
+        m_phasor["phasor<br/>spectral · gemgum · facet · wave"]
+        m_prelude["prelude"]
+        m_query["query"]
+        m_quest["quest"]
+        m_relation["relation<br/>register · edge · vocab"]
+        m_resources["resources"]
+        m_row["row"]
+        m_scope["scope"]
+        m_speak["speak"]
+        m_store["store"]
+        m_system["system"]
+        m_word["word"]
+        m_world["world"]
+    end
+    m_aspect --> m_word
+    m_condition --> m_aspect
+    m_condition --> m_word
+    m_kit --> m_prelude
+    m_kit --> m_quest
+    m_kit --> m_scope
+    m_kit --> m_speak
+    m_kit --> m_system
+    m_phasor --> m_aspect
+    m_phasor --> m_relation
+    m_query --> m_aspect
+    m_query --> m_relation
+    m_query --> m_word
+    m_query --> m_world
+    m_quest --> m_condition
+    m_quest --> m_persona
+    m_quest --> m_phasor
+    m_quest --> m_relation
+    m_quest --> m_row
+    m_quest --> m_world
+    m_relation --> m_word
+    m_scope --> m_quest
+    m_speak --> m_quest
+    m_speak --> m_scope
+    m_store --> m_aspect
+    m_store --> m_word
+    m_system --> m_world
+    m_word --> m_store
+    m_world --> m_aspect
+    m_world --> m_condition
+    m_world --> m_phasor
+    m_world --> m_relation
+    m_world --> m_resources
+    m_world --> m_row
+    m_world --> m_store
+    m_world --> m_system
+    m_world --> m_word
+    X_phient["phient (crate)"]
+    m_kit -.-> X_phient
+    X_phistd["phistd (crate)"]
+    m_phasor -.-> X_phistd
+    m_world -.-> X_phistd
+    X_phiton["phiton (crate)"]
+    m_phasor -.-> X_phiton
 ```
-src/
-  lib.rs            the mapping table above, as docs, plus `prelude`
-  word/             mod.rs = Word · set.rs = Lexicon
-  aspect.rs         the component trait
-  store/            mod.rs = AspectStore · dense.rs = Dense<A>
-  relation/         mod.rs = Relation/Relations · set.rs = the named kinds · edge.rs = Edge/Edges
-  phasor.rs         Phasor: couple, agreement, resonance, kinds
-  condition/        mod.rs = Condition · set.rs = the starting conditions
-  world/            mod.rs = World · spawn.rs = coin/forget · relate.rs = relate/calls_for · schedule.rs = step · tests.rs
-  query/            mod.rs = with/with_mut · pair.rs = With2/Related
-  system/           mod.rs = System/FnSystem · set.rs = Stage
-  resources.rs      world-owned resources
-  quest/            mod.rs = Quest · oracle.rs = Oracle/Spawned/Scripted · template.rs = prompts + parser · step.rs = transcript · run.rs = the loop and the files
-examples/quest.rs   run a quest against a real model, or scripted
+
+## How a told row moves the world, and how it is read
+
+```mermaid
+graph LR
+    R["Row { about, kind, other, weight }"]
+    T["World::tell<br/>world/rows.rs"]
+    D["declare(kind)<br/>a kind is a channel;<br/>past 64, an extension channel"]
+    REL["World::relate_by<br/>world/relate.rs"]
+    C["Phasor::couple<br/>angle → toward partner ± TURN<br/>step = max(rate, 1/(n+1))<br/>evidence += 1"]
+    S["answer SLOT kind#s<br/>(16 per kind, by the answer's id)"]
+    DR["domain / range channels<br/>kind and kind&gt; (PHI_READ=domain/sure)"]
+    RD["World::reads<br/>nearest one TURN past the word,<br/>weighed by PHI_READ: count · agree ·<br/>band · domain · sure · typed"]
+    R --> T --> D --> REL --> C
+    REL --> S
+    REL --> DR
+    C --> RD
+    S --> RD
+    DR --> RD
 ```
 
-House rules followed: `mod.rs` holds the type and its structure, `set.rs` holds
-the names; every file under 200 lines; module docs say what a thing is *for*
-and what a previous shape cost; tests inline for small files and in `tests.rs`
-when a file is near the cap.
+## Modules, one diagram each
+
+- [aspect](../../docs/phiecs/aspect.md)
+- [condition](../../docs/phiecs/condition.md)
+- [kit](../../docs/phiecs/kit.md)
+- [kit · eye](../../docs/phiecs/eye.md)
+- [persona](../../docs/phiecs/persona.md)
+- [phasor](../../docs/phiecs/phasor.md)
+- [phasor · facet](../../docs/phiecs/facet.md)
+- [phasor · wave](../../docs/phiecs/wave.md)
+- [prelude](../../docs/phiecs/prelude.md)
+- [query](../../docs/phiecs/query.md)
+- [quest](../../docs/phiecs/quest.md)
+- [relation](../../docs/phiecs/relation.md)
+- [resources](../../docs/phiecs/resources.md)
+- [row](../../docs/phiecs/row.md)
+- [scope](../../docs/phiecs/scope.md)
+- [speak](../../docs/phiecs/speak.md)
+- [store](../../docs/phiecs/store.md)
+- [system](../../docs/phiecs/system.md)
+- [word](../../docs/phiecs/word.md)
+- [world](../../docs/phiecs/world.md)
+
+Notes and tables: [docs/notes.md](../../docs/phiecs/notes.md) · What is left to do: [TODO.md](TODO.md)

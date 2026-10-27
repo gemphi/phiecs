@@ -8,8 +8,16 @@ description = "An entity-component-system for language: words as entities, relat
 # The one seed (docs/159): a word's starting angles come from phinet so the
 # same word has the same angles in every phasor of the workspace.
 phistd = { path = "../phistd" }
+# The spectral phasor (phasor/spectral): its fine-structure phase and colour
+# come from phiton, and a lexicon stores it with serde.
+phiton = { path = "../phiton" }
+serde = { version = "1.0", features = ["derive"] }
+# The facet's wave reads (phasor/wave): the ray cast scores the lexicon in parallel.
+rayon = "1.8"
 
 [dev-dependencies]
+# The relation vocabulary's round trip through its stored form.
+serde_json = "1"
 # Dev-only (cargo allows the cycle): the kit's face test reads frames back
 # through phient's prose Knowing.
 phient = { path = "../phient" }

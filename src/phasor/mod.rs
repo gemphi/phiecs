@@ -6,6 +6,16 @@
 //! channels, each a complex phasor with an amplitude and the count of what was
 //! seen under it. Phical stores no point — the number here is never a
 //! position, always an angle and how much evidence stands behind it.
+//!
+//! [`spectral`] holds the same word packed for a lexicon: 64 channels a
+//! byte each, with evidence counts and a target side (phiano's store).
+
+pub mod facet;
+pub mod gemgum;
+pub mod spectral;
+pub mod wave;
+
+pub use spectral::SpectralPhasor;
 
 use crate::aspect::Aspect;
 use crate::relation::{MAX_KINDS, Relation};

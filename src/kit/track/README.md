@@ -1,6 +1,6 @@
 # phikit::track — the space, frame by frame
 
-In Phient's world, a word (w) is a seed: what it relates to, under what conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical stores no point: a word is 32–64 relations, each a complex phasor on a closed circle with a count; meaning is a side effect of pairs of words moving under a condition.
+In Phient's world, a word (w) is a seed: what it relates to, under what conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical stores no point: a word is 32–64 relations, each a complex phasor on a closed circle; meaning is a side effect of pairs of words moving under a condition, and they move by the error of what was expected — toward what came, away from what did not.
 
 A port of the Rust ARKit binding's `arkit` module (`anchor`, `camera`, `frame`, `session`, `raycast`, `geometry`, `mesh`, `scene_reconstruction`, `environment`, `geo`, `world`, `participants`, `collaboration`, `coaching`, `room_plan`), in our words and with the stubs made to work: a camera projects and unprojects, a raycast meets the floor, a world map survives its bytes, a session tells its events in order, a capture keeps rooms big enough.
 

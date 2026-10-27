@@ -1,6 +1,6 @@
 # phiecs — the Entity Component System and the phasor engine
 
-In Phient's world, a word (w) is a seed: what it relates to, under what conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical stores no point: a word is 32–64 relations, each a complex phasor on a closed circle with a count; meaning is a side effect of pairs of words moving under a condition.
+In Phient's world, a word (w) is a seed: what it relates to, under what conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical stores no point: a word is 32–64 relations, each a complex phasor on a closed circle; meaning is a side effect of pairs of words moving under a condition, and they move by the error of what was expected — toward what came, away from what did not.
 
 Everything told to this world is one shape: a `Row { about, kind, other, weight }`, and `World::tell` is the one loop. Nothing learns from counts here — the engine measures the DIFFERENCE under conditions and moves phasors: telling `a next b` couples `a` toward one TURN before `b` on the `next` channel, sequentially and directed, with a step of `max(rate, 1/(evidence+1))` so one-shot facts are readable at once. Reading (`World::reads`) comes FROM the phasors: the words nearest one TURN past the asked word on the kind's channel, scored by phase agreement times √amplitude.
 

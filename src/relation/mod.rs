@@ -9,8 +9,10 @@
 
 mod edge;
 mod set;
+pub mod vocab;
 pub use edge::{Edge, Graph};
 pub use set::{DEFAULT_KINDS, KIND_NAMES};
+pub use vocab::{RelationVocab, MARKER_CHANNELS_MAX, MARKER_MAX_GAP, OFFSET_CHANNELS};
 
 /// How many relation kinds one language is assumed to hold. Phiano measures
 /// this bound rather than asserting it (docs/types); 64 is the channel count

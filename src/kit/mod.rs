@@ -4,8 +4,9 @@
 //! conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and
 //! composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical
 //! stores no point: a word is 32–64 relations, each a complex phasor on a
-//! closed circle with a count; meaning is a side effect of pairs of words
-//! moving under a condition.
+//! closed circle; meaning is a side effect of pairs of words moving under a
+//! condition, and they move by the error of what was expected — toward what
+//! came, away from what did not.
 //!
 //! The kit is the world a persona has a body in. It lived as its own
 //! crate (phikit) until the name was given to the reality-kit repo; its
@@ -47,6 +48,7 @@
 
 pub mod body;
 pub mod device;
+pub mod eye;
 pub mod whole;
 pub mod tell;
 pub mod track;
