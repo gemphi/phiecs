@@ -10,8 +10,13 @@
 //! [`spectral`] holds the same word packed for a lexicon: 64 channels a
 //! byte each, with evidence counts and a target side (phiano's store).
 
+pub mod attention;
 pub mod facet;
+pub mod flow;
 pub mod gemgum;
+pub mod layers;
+pub mod oscillator;
+pub mod relational;
 pub mod spectral;
 pub mod wave;
 

@@ -27,6 +27,8 @@ use pmi::*;
 
 mod spectral;
 pub mod constants;
+pub mod helix;
+pub mod storage;
 pub use constants::*;
 
 #[cfg(test)]

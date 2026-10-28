@@ -14,15 +14,16 @@
 //!
 //! | RealityKit / reality-foundation | phiecs |
 //! |---|---|
-//! | `Entity` | [`Word`](word::Word) |
+//! | `Entity` | [`Word`](word::Word), also named [`Entity`](entity::Entity) |
 //! | `EntityGenerator` | [`Lexicon`](word::Lexicon) |
-//! | `Component` | [`Aspect`](aspect::Aspect) |
+//! | `Component` | [`Aspect`](aspect::Aspect), also named [`Component`](node::Component) |
 //! | `Storage<T>` (linear scan) | [`Dense<A>`](store::Dense) (id-indexed) |
 //! | `World` | [`World`](world::World) |
 //! | `EntityBuilder` | [`WordBuilder`](world::WordBuilder) |
 //! | `spawn` / `despawn` | `coin` / `forget` |
 //! | `Transform` | [`Phasor`](phasor::Phasor) |
-//! | `Parent` / `Children` | [`Edge`](relation::Edge) / [`Graph`](relation::Graph) |
+//! | `Parent` / `Children` | [`Tree`](node::Tree): one parent each, no loops |
+//! | *(many to many)* | [`Edge`](relation::Edge) / [`Graph`](relation::Graph), also [`node::graph`] |
 //! | `add_child` / `remove_child` | `relate` / `unrelate` |
 //! | `Query` / `Query2` | `with` / `with2` / [`Related`](query::Related) |
 //! | `System` / `SystemStage` | [`System`](system::System) / [`Stage`](system::Stage) |
@@ -30,6 +31,21 @@
 //! | `Resources` (orphaned) | [`Resources`](resources::Resources), world-owned |
 //! | `GKStateMachine` | [`Condition`](condition::Condition) |
 //! | *(none)* | [`Relation`](relation::Relation) — the kind of an edge |
+//! | *(none)* | [`State`](node::State) — what changes per step, kept twice |
+//!
+//! ## Levels
+//!
+//! Each level builds only on the ones below it, so a crate can take as
+//! little as it needs: a simulator with a body tree (MuJoCo-like) stands on
+//! levels 0 to 3 and phiton's units, a language on all five.
+//!
+//! | level | modules | what |
+//! |---|---|---|
+//! | 0 · identity | [`entity`] | the id everything hangs on; a word is one |
+//! | 1 · data | [`node::component`], [`node::state`] | what an entity is, and what changes as the world steps |
+//! | 2 · structure | [`node::tree`], [`node::graph`] | one parent each, or typed edges many to many |
+//! | 3 · the world | [`world`], [`system`], [`query`] | entities, their nodes, and the systems run over them |
+//! | 4 · domains | [`phasor`], [`kit`], [`quest`], [`speak`] | language (the phasor, the facet), bodies and devices, quests |
 //!
 //! ```
 //! use phiecs::prelude::*;
@@ -44,6 +60,7 @@
 
 pub mod aspect;
 pub mod condition;
+pub mod entity;
 pub mod persona;
 pub mod phasor;
 pub mod quest;
@@ -54,6 +71,7 @@ pub mod row;
 pub mod scope;
 pub mod speak;
 pub mod kit;
+pub mod node;
 pub mod store;
 pub mod system;
 pub mod word;
@@ -65,6 +83,8 @@ pub use row::{parse_tsv, Row};
 pub mod prelude {
     pub use crate::aspect::Aspect;
     pub use crate::condition::{Condition, ConditionSet};
+    pub use crate::entity::Entity;
+    pub use crate::node::{State, Tree};
     pub use crate::phasor::Phasor;
     pub use crate::quest::{Oracle, Quest, Scripted, Spawned};
     pub use crate::relation::{Edge, Relation, Register};

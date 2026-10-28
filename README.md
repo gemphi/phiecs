@@ -8,6 +8,8 @@ A condition is a CHANNEL: beyond the 64 base kinds, extension channels open lazi
 
 `quest/` carries the oracle seam (`Spawned::ollama(model)` on a machine that has it; `Scripted` in the sandbox), so a student in this world can ask a teacher for more uses of what it is unsure of.
 
+It is laid out in levels, each built only on those below: `entity` (0, the id; a word is one) · `node::component` and `node::state` (1, what an entity is and what changes per step) · `node::tree` and `node::graph` (2, one parent each, or typed edges) · `world`, `system`, `query` (3) · the domains, `phasor` with the facet and its wave, `kit`, `quest` (4). A simulator with a body tree (MuJoCo-like) needs levels 0 to 3 and phiton; a language uses all five.
+
 Measured (the record is [phiano](https://github.com/gemphi/phiano)'s docs/186–194): this engine leads the arena on glosses, 32.9% next-word vs counts' 29.9%, and still trails counts on prose, 13.9% vs 21.4% — stated straight, both numbers.
 
 Part of the [phinet](https://github.com/gemphi/phinet) workspace. MIT OR Apache-2.0.

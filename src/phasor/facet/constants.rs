@@ -28,3 +28,13 @@ pub const RELATION_WINDOW: usize = 8;
 // The sector resolution is a power of two no smaller than 2^SECTOR_EXPONENT_MIN;
 // phiano checked it at run time, the compiler checks it here.
 const _: () = assert!(SECTOR_RESOLUTION.is_power_of_two() && SECTOR_RESOLUTION >= 1 << SECTOR_EXPONENT_MIN);
+
+/// Kuramoto learning rate for phase relaxation.
+/// Recommended range: [0.01, 0.15]. Default: 0.05 (balanced).
+pub const LEARNING_RATE: f64 = 0.05;
+
+/// Anti-phase pulse applied to a misunderstood concept (π radians).
+pub const PHASE_REPULSION: f64 = std::f64::consts::PI;
+
+/// Default syntactic forward phase momentum velocity.
+pub const SYNTACTIC_MOMENTUM_DEFAULT: f64 = 0.15;

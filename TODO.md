@@ -31,10 +31,21 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] phasor: phiano's `lib.rs` keeps `pub use phiecs::phasor::facet;` only because the read-only examples `flow` and `meaning` name `phiano::facet::Facet`. Once they can be edited, they name `phiecs::phasor::facet` and the re-export goes.
 - [ ] phasor: phiano's `PhiConfig::sector_resolution` still checks `SECTOR_RESOLUTION` at run time; `facet/constants.rs` checks it at compile time, so the run-time check can read the constant and stop checking.
 
+## Levels
+
+- [x] entity, node: `entity` (level 0) and `node` (levels 1 and 2: component, state, tree, graph) give the ECS names; `Tree` (one parent, no loops) and `State` (now and next, committed per step) are new, tested.
+- [ ] entity: `Entity` is the ECS name of `Word` (a re-export), so rustdoc and errors still print `Word`. Flip it (the struct named `Entity`, `Word` the alias) once phikit's phiber and phiplay have moved to the new names.
+- [ ] node: no `World` holds a `Tree` or a `State` yet; a simulator holds its own. `World::tree` and `World::state::<T>()` when a second caller needs them.
+
 ## Stale docs
 
 - [ ] quest: the `Synthetic::truth` doc says `opposite`, but the kind it emits is `unlike` (quest/synthetic.rs:41).
+- [ ] phasor: `relational` (RelationalPhasor, RelationalFacet) is kept as the experiment the spectral phasor's evidence was promoted from; its doc cites `bin/relational`, `bin/promoted`, `bin/dimensions`, `bin/constructed`, which are now phiano examples (phasor/relational/mod.rs:11).
 - [ ] phasor: in `gemgum`, `bind`, `binding_strength` and `band_position` have no callers (phasor/gemgum.rs); in phiano they were hidden by an `#[allow(dead_code)]` on the module, which did not move.
 - [ ] relation: the `MAX_KINDS` doc says it caps the kinds a language holds, but `declare` opens extension channels past it without bound (relation/mod.rs:15).
 - [ ] kit: the body, device and track READMEs are still titled `phikit::…`, and the body README cites `phiplm::prose::Knowing` (now `phient::prose`) (kit/body/README.md:1, :15; kit/device/README.md:1; kit/track/README.md:1).
 - [ ] README: "Nothing learns from counts here", but `couple` is a running mean.
+
+## Moved in (2026-10-28)
+
+- [x] phasor: phiano's `layers`, `flow`, `attention`, the oscillator's field, view and trainer, and the helix's files (`facet::helix`) moved in; `LEARNING_RATE`, `PHASE_REPULSION` and `SYNTACTIC_MOMENTUM_DEFAULT` are the facet's constants now. phiecs depends on phical for the helix's `Codon` (docs/phiano/distribution).

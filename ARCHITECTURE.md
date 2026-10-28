@@ -7,9 +7,11 @@ graph TB
     subgraph crate["phiecs"]
         m_aspect["aspect"]
         m_condition["condition"]
+        m_entity["entity<br/>level 0 · Entity · Names"]
         m_kit["kit<br/>body · device · track · eye"]
+        m_node["node<br/>levels 1 and 2 · component · state · tree · graph"]
         m_persona["persona"]
-        m_phasor["phasor<br/>spectral · gemgum · facet · wave"]
+        m_phasor["phasor<br/>spectral · gemgum · facet + storage + helix · wave<br/>layers · flow · attention · oscillator"]
         m_prelude["prelude"]
         m_query["query"]
         m_quest["quest"]
@@ -26,7 +28,12 @@ graph TB
     m_aspect --> m_word
     m_condition --> m_aspect
     m_condition --> m_word
+    m_entity --> m_word
     m_kit --> m_prelude
+    m_node --> m_entity
+    m_node --> m_aspect
+    m_node --> m_store
+    m_node --> m_relation
     m_kit --> m_quest
     m_kit --> m_scope
     m_kit --> m_speak
@@ -67,6 +74,8 @@ graph TB
     m_world -.-> X_phistd
     X_phiton["phiton (crate)"]
     m_phasor -.-> X_phiton
+    X_phical["phical (crate)"]
+    m_phasor -.->|"helix: Codon"| X_phical
 ```
 
 ## How a told row moves the world, and how it is read
@@ -93,12 +102,16 @@ graph LR
 
 - [aspect](../../docs/phiecs/aspect.md)
 - [condition](../../docs/phiecs/condition.md)
+- [entity · node](../../docs/phiecs/node.md)
 - [kit](../../docs/phiecs/kit.md)
 - [kit · eye](../../docs/phiecs/eye.md)
 - [persona](../../docs/phiecs/persona.md)
 - [phasor](../../docs/phiecs/phasor.md)
 - [phasor · facet](../../docs/phiecs/facet.md)
+- [phasor · relational](../../docs/phiecs/relational.md)
 - [phasor · wave](../../docs/phiecs/wave.md)
+- [phasor · facet · storage](../../docs/phiecs/storage.md) · [helix](../../docs/phiecs/helix.md)
+- [phasor · layers](../../docs/phiecs/layers.md) · [flow](../../docs/phiecs/flow.md) · [attention](../../docs/phiecs/attention.md) · [oscillator](../../docs/phiecs/oscillator.md)
 - [prelude](../../docs/phiecs/prelude.md)
 - [query](../../docs/phiecs/query.md)
 - [quest](../../docs/phiecs/quest.md)

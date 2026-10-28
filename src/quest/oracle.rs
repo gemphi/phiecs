@@ -55,9 +55,13 @@ impl Spawned {
         }
     }
 
-    /// `ollama run <model>` — the shortest path to a local Phi-4.
+    /// `ollama run <model> --nowordwrap` — the shortest path to a local
+    /// Phi-4. Without `--nowordwrap`, ollama wraps long lines by moving the
+    /// cursor back and erasing (`ESC[nD`, `ESC[K`) and writes the wrapped
+    /// word again, so the piped answer carries escape codes and doubled
+    /// words into whatever is told it.
     pub fn ollama(model: &str) -> Self {
-        Self::new("ollama", &["run", model])
+        Self::new("ollama", &["run", model, "--nowordwrap"])
     }
 }
 
@@ -135,6 +139,11 @@ mod tests {
         let asked = quest.run(&mut oracle);
         assert_eq!(asked, 1);
         assert!(quest.stopped.as_deref().unwrap_or("").contains("unreachable"));
+    }
+
+    #[test]
+    fn ollama_is_asked_without_word_wrap() {
+        assert_eq!(Spawned::ollama("phi4").name(), "ollama run phi4 --nowordwrap");
     }
 
     #[test]
