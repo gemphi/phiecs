@@ -121,7 +121,7 @@ impl Quest {
             }
             Err(e) => Answer::Nothing(e.to_string()),
         };
-        let step = Step { about: about.to_string(), depth, template: template::VOICE.name, prompt, answer, kept: Vec::new(), opened: Vec::new() };
+        let step = Step { about: about.to_string(), depth, template: template::VOICE.name, prompt, answer, kept: Vec::new(), refused: Vec::new(), opened: Vec::new() };
         self.steps.push(step.clone());
         step
     }

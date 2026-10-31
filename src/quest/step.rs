@@ -17,6 +17,11 @@ pub struct Step {
     pub answer: Answer,
     /// The relations that survived parsing and were written into the world.
     pub kept: Vec<(String, String, f64)>,
+    /// Claims the Checker refused: parsed, offered to `check`, and then not
+    /// told because their [`Standing`] did not permit it. Each carries the
+    /// `(kind, other, weight)` of the claim and the standing that refused it,
+    /// so the transcript shows a refusal next to the row it would have been.
+    pub refused: Vec<(String, String, f64, Standing)>,
     /// Words this step put on the frontier.
     pub opened: Vec<String>,
 }
@@ -66,6 +71,12 @@ impl Step {
             s.push_str("| kind | word | weight |\n|---|---|---|\n");
             for (k, o, w) in &self.kept {
                 s.push_str(&format!("| {k} | {o} | {w:.2} |\n"));
+            }
+        }
+        if !self.refused.is_empty() {
+            s.push_str("\n## Refused\n\n| kind | word | weight | standing |\n|---|---|---|---|\n");
+            for (k, o, w, standing) in &self.refused {
+                s.push_str(&format!("| {k} | {o} | {w:.2} | {standing:?} |\n"));
             }
         }
         s

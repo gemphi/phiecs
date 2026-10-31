@@ -35,7 +35,7 @@ impl Quest {
             kept.push((c.kind, c.other, c.weight));
         }
         let opened = step::opened(&kept, self.asked());
-        Step { about: about.to_string(), depth, template: CONDITIONS.name, prompt, answer, kept, opened }
+        Step { about: about.to_string(), depth, template: CONDITIONS.name, prompt, answer, kept, refused: Vec::new(), opened }
     }
 
     /// Read back a written `conditions.tsv` (`about \t condition \t other \t

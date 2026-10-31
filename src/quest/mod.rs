@@ -14,6 +14,7 @@
 
 mod ask;
 pub mod builders;
+mod check;
 mod conditions;
 mod oracle;
 mod kinds;
@@ -25,6 +26,7 @@ mod synthetic;
 mod template;
 mod tsv;
 
+pub use check::{Bare, Checker, Degeneracy, Standing};
 pub use oracle::{Oracle, OracleError, Scripted, Spawned};
 pub use step::{Answer, Step};
 pub use synthetic::{SYNTHETIC_KINDS, Synthetic};
@@ -75,6 +77,12 @@ pub struct Quest {
     pub sentences: Vec<(String, String)>,
     /// Whether each word is also asked its conditions ([`Quest::with_conditions`]).
     pub conditioned: bool,
+    /// What classifies each parsed claim before a row is told from it. The
+    /// default is [`Bare`], the two tests phiecs can perform alone; a caller
+    /// with phiclm reachable passes the Falsehood_Detector through
+    /// [`Quest::with_checker`]. The judge and the Laws are reached through
+    /// this trait, never through an edge, so phiecs gains no dependency (R8.1).
+    pub checker: Box<dyn Checker>,
 }
 
 impl Quest {
@@ -100,7 +108,17 @@ impl Quest {
             voice: None,
             sentences: Vec::new(),
             conditioned: false,
+            checker: Box::new(Bare),
         }
+    }
+
+    /// Classify every parsed claim through `checker` before a row is told,
+    /// instead of through the default [`Bare`]. This is the one seam by which
+    /// phisor's Falsehood_Detector reaches the quest without phiecs depending
+    /// on it.
+    pub fn with_checker(mut self, checker: Box<dyn Checker>) -> Self {
+        self.checker = checker;
+        self
     }
 
     pub fn with_depth(mut self, depth: u32) -> Self {
