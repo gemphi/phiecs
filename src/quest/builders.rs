@@ -64,7 +64,7 @@ pub fn parse(reply: &str) -> Option<[String; 5]> {
         for (slot, f) in out.iter_mut().zip(&fields) {
             *slot = match f.as_str() {
                 "none" | "n/a" | "—" => "-".to_string(),
-                x => word_number(x).unwrap_or(x).to_string(),
+                x => word_number(x).unwrap_or_else(|| x.to_string()),
             };
         }
         if let Some(i) = LETTERS.iter().position(|l| *l == out[3]) {
@@ -111,10 +111,9 @@ pub fn strip_escapes(s: &str) -> String {
     out
 }
 
-fn word_number(x: &str) -> Option<&'static str> {
-    const WORDS: [&str; 10] = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
-    const DIGITS: [&str; 10] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-    WORDS.iter().position(|w| *w == x).map(|i| DIGITS[i])
+/// A number word's digits: its place in `data/lex/numbers.txt`.
+fn word_number(x: &str) -> Option<String> {
+    crate::lex::words("numbers").iter().position(|w| w == x).map(|i| (i + 1).to_string())
 }
 
 #[cfg(test)]

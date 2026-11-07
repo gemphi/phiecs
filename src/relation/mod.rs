@@ -46,8 +46,10 @@ pub struct Register {
 }
 
 /// The kinds that are symmetric by their meaning — being beside, being
-/// alike, being with — read with no turn.
-pub const SYMMETRIC: &[&str] = &["near", "with", "like", "same", "beside", "alongside", "together"];
+/// alike, being with — read with no turn. Which kinds: `data/lex/symmetric.txt`.
+pub fn is_symmetric(name: &str) -> bool {
+    crate::lex::is("symmetric", name)
+}
 
 impl Register {
     pub fn new() -> Self {
@@ -76,7 +78,7 @@ impl Register {
             return None;
         }
         self.index.insert(name.to_string(), self.names.len() as u32);
-        self.symmetric.push(SYMMETRIC.contains(&name));
+        self.symmetric.push(is_symmetric(name));
         self.names.push(name.to_string());
         self.evidence.push(0);
         Some(Relation(self.names.len() as u32 - 1))

@@ -8,6 +8,10 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] phasor: a word's phasor has two forms side by side, `Phasor` (f64 slots, the world's) and `spectral::SpectralPhasor` (64 bytes plus evidence, the facet's lexicon). Both live here now; one should be the other's storage, not a second type, and the facet would read `Phasor` then.
 - [ ] world: `read_mode` caches `PHI_READ` in a process-wide `OnceLock`, so the read mode cannot differ per world or per test. A bad `bound:` value falls back to `Domain`, while the other modes fall back to their own (world/relate/mode.rs:67, :74).
 
+## No data in code (2026-11-07)
+
+- [x] The two English word lists the rules named are files: `data/lex/symmetric.txt` (the kinds read with no turn, `relation::is_symmetric`) and `data/lex/numbers.txt` (the number words, `quest::builders::word_number`), read through `lex::words` / `lex::is`. `CONDITION_NAMES`, `KIND_NAMES`, `ASPECTS`, `SYNTHETIC_KINDS` name enums and stay code.
+
 ## Correctness
 
 - [ ] world: `World::contains` tests the lexicon, not the roll, so it is still true for a word after `forget` (world/mod.rs:105).

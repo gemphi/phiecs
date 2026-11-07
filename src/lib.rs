@@ -71,6 +71,7 @@ pub mod row;
 pub mod scope;
 pub mod speak;
 pub mod kit;
+pub mod lex;
 pub mod node;
 pub mod store;
 pub mod system;

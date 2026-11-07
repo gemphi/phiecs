@@ -20,6 +20,7 @@ graph TB
         m_row["row"]
         m_scope["scope"]
         m_speak["speak"]
+        m_lex["lex<br/>data/lex/{symmetric, numbers}.txt<br/>words · is (phistd::lexfile::cached)"]
         m_store["store"]
         m_system["system"]
         m_word["word"]
@@ -37,6 +38,8 @@ graph TB
     m_kit --> m_quest
     m_kit --> m_scope
     m_kit --> m_speak
+    m_relation --> m_lex
+    m_quest --> m_lex
     m_kit --> m_system
     m_phasor --> m_aspect
     m_phasor --> m_relation

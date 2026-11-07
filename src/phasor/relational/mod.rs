@@ -48,7 +48,7 @@
 //!   always available.
 //! * **Markers.** The most frequent word standing *between* two others names the
 //!   relation between them — `of`, `in`, `as`, `to`. This is the observation
-//!   behind `roles::RELATIONAL_PREPOSITIONS`, except that the markers are taken
+//!   behind `roles::is_relational_preposition`, except that the markers are taken
 //!   by corpus frequency rather than chosen, so the language supplies the
 //!   inventory.
 //!

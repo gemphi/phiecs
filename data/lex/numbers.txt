@@ -1,0 +1,11 @@
+# the number words in order: the line's place is the value
+one
+two
+three
+four
+five
+six
+seven
+eight
+nine
+ten

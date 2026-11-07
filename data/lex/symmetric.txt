@@ -1,0 +1,8 @@
+# the kinds that are symmetric by their meaning: being beside, alike, with - read with no turn (docs/187)
+near
+with
+like
+same
+beside
+alongside
+together
